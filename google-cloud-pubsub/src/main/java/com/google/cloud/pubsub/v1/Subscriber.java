@@ -318,6 +318,7 @@ public class Subscriber extends AbstractApiService implements SubscriberInterfac
               public void run() {
                 try {
                   startStreamingConnections();
+                  Thread.sleep(1000);
                   notifyStarted();
                 } catch (Throwable t) {
                   notifyFailed(t);

@@ -31,8 +31,8 @@ import java.util.concurrent.TimeUnit;
 public class PublisherExample {
   public static void main(String... args) throws Exception {
     // TODO(developer): Replace these variables before running the sample.
-    String projectId = "your-project-id";
-    String topicId = "your-topic-id";
+    String projectId = "google-tpc-testing-environment:cloudsdk-test-project";
+    String topicId = "tpc-test-topic";
 
     publisherExample(projectId, topicId);
   }

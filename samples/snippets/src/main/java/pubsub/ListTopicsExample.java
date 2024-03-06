@@ -19,6 +19,7 @@ package pubsub;
 // [START pubsub_list_topics]
 
 import com.google.cloud.pubsub.v1.TopicAdminClient;
+import com.google.cloud.pubsub.v1.TopicAdminSettings;
 import com.google.pubsub.v1.ProjectName;
 import com.google.pubsub.v1.Topic;
 import java.io.IOException;
@@ -26,13 +27,15 @@ import java.io.IOException;
 public class ListTopicsExample {
   public static void main(String... args) throws Exception {
     // TODO(developer): Replace these variables before running the sample.
-    String projectId = "your-project-id";
+    String projectId = "google-tpc-testing-environment:cloudsdk-test-project";
 
     listTopicsExample(projectId);
   }
 
   public static void listTopicsExample(String projectId) throws IOException {
-    try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
+    try (TopicAdminClient topicAdminClient =
+        TopicAdminClient.create(
+            TopicAdminSettings.newBuilder().setUniverseDomain("apis-tpclp.goog").build())) {
       ProjectName projectName = ProjectName.of(projectId);
       for (Topic topic : topicAdminClient.listTopics(projectName).iterateAll()) {
         System.out.println(topic.getName());

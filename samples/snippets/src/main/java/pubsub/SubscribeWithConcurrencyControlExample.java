@@ -31,8 +31,8 @@ import java.util.concurrent.TimeoutException;
 public class SubscribeWithConcurrencyControlExample {
   public static void main(String... args) throws Exception {
     // TODO(developer): Replace these variables before running the sample.
-    String projectId = "your-project-id";
-    String subscriptionId = "your-subscription-id";
+    String projectId = "cloud-pubsub-prober-staging";
+    String subscriptionId = "mike-load-test-sub";
 
     subscribeWithConcurrencyControlExample(projectId, subscriptionId);
   }
@@ -46,8 +46,8 @@ public class SubscribeWithConcurrencyControlExample {
     MessageReceiver receiver =
         (PubsubMessage message, AckReplyConsumer consumer) -> {
           // Handle incoming message, then ack the received message.
-          System.out.println("Id: " + message.getMessageId());
-          System.out.println("Data: " + message.getData().toStringUtf8());
+          // System.out.println("Id: " + message.getMessageId());
+          // System.out.println("Data: " + message.getData().toStringUtf8());
           consumer.ack();
         };
 
@@ -56,7 +56,7 @@ public class SubscribeWithConcurrencyControlExample {
       // Provides an executor service for processing messages. The default `executorProvider` used
       // by the subscriber has a default thread count of 5.
       ExecutorProvider executorProvider =
-          InstantiatingExecutorProvider.newBuilder().setExecutorThreadCount(4).build();
+          InstantiatingExecutorProvider.newBuilder().setExecutorThreadCount(2).build();
 
       // `setParallelPullCount` determines how many StreamingPull streams the subscriber will open
       // to receive message. It defaults to 1. `setExecutorProvider` configures an executor for the
@@ -65,7 +65,8 @@ public class SubscribeWithConcurrencyControlExample {
       // message callbacks. In total 2x4=8 threads are used for message processing.
       subscriber =
           Subscriber.newBuilder(subscriptionName, receiver)
-              .setParallelPullCount(2)
+	      .setEndpoint("staging-pubsub.sandbox.googleapis.com:443")
+              .setParallelPullCount(40)
               .setExecutorProvider(executorProvider)
               .build();
 
@@ -73,7 +74,7 @@ public class SubscribeWithConcurrencyControlExample {
       subscriber.startAsync().awaitRunning();
       System.out.printf("Listening for messages on %s:\n", subscriptionName.toString());
       // Allow the subscriber to run for 30s unless an unrecoverable error occurs.
-      subscriber.awaitTerminated(30, TimeUnit.SECONDS);
+      subscriber.awaitTerminated(12000, TimeUnit.SECONDS);
     } catch (TimeoutException timeoutException) {
       // Shut down the subscriber after 30s. Stop receiving messages.
       subscriber.stopAsync();
