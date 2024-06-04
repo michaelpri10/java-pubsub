@@ -32,8 +32,8 @@ import org.threeten.bp.Duration;
 public class PublishWithRetrySettingsExample {
   public static void main(String... args) throws Exception {
     // TODO(developer): Replace these variables before running the sample.
-    String projectId = "your-project-id";
-    String topicId = "your-topic-id";
+    String projectId = "cloud-pubsub-load-tests";
+    String topicId = "mike-topic-test";
 
     publishWithRetrySettingsExample(projectId, topicId);
   }
@@ -55,14 +55,11 @@ public class PublishWithRetrySettingsExample {
 
       RetrySettings retrySettings =
           RetrySettings.newBuilder()
-              .setInitialRetryDelay(initialRetryDelay)
-              .setRetryDelayMultiplier(retryDelayMultiplier)
-              .setMaxRetryDelay(maxRetryDelay)
               .setInitialRpcTimeout(initialRpcTimeout)
-              .setRpcTimeoutMultiplier(rpcTimeoutMultiplier)
-              .setMaxRpcTimeout(maxRpcTimeout)
               .setTotalTimeout(totalTimeout)
+              .setMaxAttempts(2)
               .build();
+      // RetrySettings retrySettings = RetrySettings.newBuilder().build();
 
       // Create a publisher instance with default settings bound to the topic
       publisher = Publisher.newBuilder(topicName).setRetrySettings(retrySettings).build();
